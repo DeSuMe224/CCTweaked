@@ -21,6 +21,9 @@ local ControlRodsLevel = 0
 local FuelAmount
 local DefaultControlRodsValue = 80
 local EmergencyControlRodsValue = 10
+local Kp = 1.0
+local Ki = 0.1
+
 
 local StartUpMessage = {
     "Das ist Saschas ReaktorController!",
@@ -122,13 +125,22 @@ end
 local function postStatusUpdate()
     monitor.clear()
     monitor.setTextColor(colors.white)
+
+    local buttons = {
+        { label = "Kp+", x1 = size.x/2+2, y1 = size.y-8, x2 = size.x/2+12, y2 = size.y-6, action = function() Kp = Kp + 0.1 end },
+        { label = "Kp-", x1 = size.x/2+13, y1 = size.y-8, x2 = size.x/2+22, y2 = size.y-6, action = function() Kp = math.max(Kp - 0.1, 0) end },
+        { label = "Ki+", x1 = size.x/2+2, y1 = size.y-4, x2 = size.x/2+12, y2 = size.y-2, action = function() Ki = Ki + 0.01 end },
+        { label = "Ki-", x1 = size.x/2+13, y1 = size.y-4, x2 = size.x/2+22, y2 = size.y-2, action = function() Ki = math.max(Ki - 0.01, 0) end },
+    }
+
+
     monitor.setCursorPos(1,size.y)
     monitor.write("Reactor Controller; Version 1.0")
     monitor.setCursorPos(2,size.y-1)
     local filledString = string.rep("=", size.x-2)
     monitor.write(filledString)
 
-    monitor.setCursorPos(1,size.y-4)
+    monitor.setCursorPos(1,size.y-3)
     monitor.write("Status: ")
     if (Active) then
         monitor.setTextColor(colors.green)
@@ -141,13 +153,13 @@ local function postStatusUpdate()
     
     monitor.setTextColor(colors.white)
 
-    --monitor.setCursorPos(1,size.y-5)
-    --monitor.write("Reactor Capacity: ")
-    --monitor.write(Capacity)
+    monitor.setCursorPos(1,size.y-4)
+    monitor.write("KP: ")
+    monitor.write(Kp)
 
-    --monitor.setCursorPos(1,size.y-6)
-    --monitor.write("Reactor Storage Volume: ")
-    --monitor.write(Storage)
+    monitor.setCursorPos(1,size.y-5)
+    monitor.write("Reactor Storage Volume: ")
+    monitor.write(Ki)
 
     monitor.setCursorPos(1,size.y-6)
     monitor.write("Percentage of Fuel Capacity: ")
@@ -180,12 +192,7 @@ local function postStatusUpdate()
     monitor.setTextColor(colors.white)
     drawRectangle(size.x/2, size.y-2,size.x/2, size.y-8, false, "|", "blue")
 
-    local buttons = {
-        { label = "Kp+", x1 = size.x/2+1, y1 = size.y-8, x2 = size.x/2+11, y2 = size.y-6, action = function() Kp = Kp + 0.1 end },
-        { label = "Kp-", x1 = size.x/2+12, y1 = size.y-8, x2 = size.x/2+21, y2 = size.y-6, action = function() Kp = math.max(Kp - 0.1, 0) end },
-        { label = "Ki+", x1 = size.x/2+1, y1 = size.y-5, x2 = size.x/2+11, y2 = size.y-3, action = function() Ki = Ki + 0.01 end },
-        { label = "Ki-", x1 = size.x/2+12, y1 = size.y-5, x2 = size.x/2+21, y2 = size.y-3, action = function() Ki = math.max(Ki - 0.01, 0) end },
-    }
+    
 
     -- Draw buttons
     for _, button in ipairs(buttons) do
