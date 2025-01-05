@@ -113,7 +113,7 @@ end
 
 -- Check if a button was pressed
 local function isButtonPressed(button, x, y)
-    return x >= button.x1 and x <= button.x2 and y >= button.y2 and y <= button.y1
+    return x >= button.x1 and x <= button.x2 and y <= button.y2 and y >= button.y1
 end
 
 -- Handle monitor touch events
@@ -197,7 +197,9 @@ local function postStatusUpdate()
 
     monitor.setTextColor(colors.white)
     drawRectangle(size.x/2, size.y-2,size.x/2, size.y-8, false, "|", "blue")
-
+    monitor.setCursorPos(size.x/2+1,size.y-9)
+    monitor.setTextColor(colors.blue)
+    monitor.write("Controlparameters:")
     
 
     -- Draw buttons
