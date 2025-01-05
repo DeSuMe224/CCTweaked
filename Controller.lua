@@ -72,7 +72,7 @@ local function drawRectangle(x1, y1, x2, y2, infill, linestyle, color)
     end
 
     monitor.setBackgroundColor(colors.black)
-    monitor.setTextColor(colors.black)
+    monitor.setTextColor(colors.white)
 end
 
 
