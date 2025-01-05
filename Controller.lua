@@ -225,27 +225,27 @@ local function generateGraphs()
     monitor.write(BufferString)
 
     --Energylevel
-    drawRectangle(2,3,graphic_window.xmax-1,16,true," ","gray")
-    drawRectangle(3,4,graphic_window.xmax-2,15,true," ","red")
+    drawRectangle(2,size.y/13-1,graphic_window.xmax-1,size.y/3.25,true," ","gray")
+    drawRectangle(3,size.y/13,graphic_window.xmax-2,size.y/3.25-1,true," ","red")
     if ((graphic_window.xmax-2)*StoragePercent<3) then
-        drawRectangle(3,4,3,15,true," ","green")
+        drawRectangle(3,size.y/13,3,size.y/3.25-1,true," ","green")
     else
 
-        drawRectangle(3,4,(graphic_window.xmax-2)*StoragePercent,15,true," ","green")
+        drawRectangle(3,size.y/13,(graphic_window.xmax-2)*StoragePercent,size.y/3.25-1,true," ","green")
     end
 
     --FuelLevel
     BufferString = "Fuel Storage"
-    monitor.setCursorPos((graphic_window.xmax/2)-((#BufferString)/2),18)
+    monitor.setCursorPos((graphic_window.xmax/2)-((#BufferString)/2),size.y/2.88)
     monitor.write(BufferString)
 
-    drawRectangle(2,20,graphic_window.xmax-1,33,true," ","gray")
-    drawRectangle(3,21,graphic_window.xmax-2,32,true," ","red")
+    drawRectangle(2,size.y/2.6,graphic_window.xmax-1,size.y/1.57,true," ","gray")
+    drawRectangle(3,size.y/2.6+1,graphic_window.xmax-2,size.y/1.57-1,true," ","red")
     if (FuelPercent<0.1) then
-        drawRectangle(3,21,3,32,true," ","yellow")
+        drawRectangle(3,size.y/2.47,3,size.y/1.625,true," ","yellow")
     else
 
-        drawRectangle(3,21,(graphic_window.xmax-2)*FuelPercent,32,true," ","yellow")
+        drawRectangle(3,size.y/2.47,(graphic_window.xmax-2)*FuelPercent,size.y/1.625,true," ","yellow")
     end
 
     --Controlrods
