@@ -9,8 +9,8 @@ local size = {
 
 --Reactor Variables
 local Active=false
-local Capacity=0
 local Storage=0
+local Capacity=0
 local ControlRodsLevel=0
 
 
@@ -65,21 +65,21 @@ local function postStatusUpdate()
     monitor.write(Active)
     monitor.setTextColor(colors.white)
 
-    monitor.setCursorPos(1,5)
-    monitor.write("Reactor Capacity: ")
-    monitor.write(Capacity)
+    --monitor.setCursorPos(1,5)
+    --monitor.write("Reactor Capacity: ")
+    --monitor.write(Capacity)
 
-    monitor.setCursorPos(1,6)
-    monitor.write("Reactor Storage Volume: ")
-    monitor.write(Storage)
+    --monitor.setCursorPos(1,6)
+    --monitor.write("Reactor Storage Volume: ")
+    --monitor.write(Storage)
 
     monitor.setCursorPos(1,7)
     monitor.write("Percentage of used Capacity: ")
-    monitor.write(StoragePercent)
+    monitor.write(string.format("%.2f", StoragePercent))
 
     monitor.setCursorPos(1,8)
-    monitor.write("Percentage of used Capacity: ")
-    monitor.write(ControlRodsLevel)
+    monitor.write("ControlRodsLevel: ")
+    monitor.write(ControlRodsLevel[1])
 
     monitor.setCursorPos(2,9)
     local filledString = string.rep("=", size.x-2)
@@ -88,7 +88,7 @@ local function postStatusUpdate()
 end
 
 
-local function ControlReactor
+local function ControlReactor()
     Capacity = reactor.getEnergyCapacity()
     
     while (true) do
@@ -97,7 +97,7 @@ local function ControlReactor
         StoragePercent = Storage/Capacity
         ControlRodsLevel=reactor.getControlRodsLevels()
         
-        if (StoragePercent > 0.8) then
+        if (StoragePercent > 0.6) then
             reactor.setActive(false)
         end
     
@@ -117,8 +117,8 @@ local function main()
         sleep(1)
     end
     print("Reactor found, this is where the fun begins!")
-        
-
+    sleep(3)    
+    ControlReactor()
 
 
 
