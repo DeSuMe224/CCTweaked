@@ -13,6 +13,15 @@ local Storage=0
 local Capacity=0
 local ControlRodsLevel=0
 
+local function initMonitor()
+    monitor.clear()
+    monitor.setTextScale(0.8)
+    monitor.setTextColor(colors.green)
+    monitor.setBackgroundColor(colors.black)
+    size.x,size.y= monitor.getSize()
+    monitor.setCursorPos(1,1)
+    return true
+end
 
 local StartUpMessage = {
     "Das ist Saschas ReaktorController!",
@@ -30,15 +39,6 @@ local function startUpScreen()
     end
 end
 
-local function initMonitor()
-    monitor.clear()
-    monitor.setTextScale(0.8)
-    monitor.setTextColor(colors.green)
-    monitor.setBackgroundColor(colors.black)
-    size.x,size.y= monitor.getSize()
-    monitor.setCursorPos(1,1)
-    return true
-end
 
 local function findReactor()
     reactor = peripheral.find("BigReactors-Reactor")
