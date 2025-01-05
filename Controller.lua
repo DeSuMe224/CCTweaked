@@ -43,8 +43,7 @@ local function drawRectangle(x1, y1, x2, y2, infill, color)
     if x1 > x2 then x1, x2 = x2, x1 end
     if y1 > y2 then y1, y2 = y2, y1 end
 
-    monitor.setBackgroundColor(colors.black)
-    monitor.setTextColor(colors[color] or colors.white)
+    monitor.setBackgroundColor(colors[color])
 
     if not infill then
         monitor.setCursorPos(x1, y1)
@@ -67,7 +66,7 @@ local function drawRectangle(x1, y1, x2, y2, infill, color)
         end
     end
 
-    monitor.setTextColor(colors.white)
+    monitor.setBackgroundColor(colors.black)
 end
 
 
