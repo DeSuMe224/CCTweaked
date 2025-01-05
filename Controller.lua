@@ -50,13 +50,13 @@ local function postStatusUpdate()
     monitor.clear()
     monitor.setTextColor(colors.white)
     monitor.setCursorPos(1,1)
-    monitor.write("Reaktor Controller; Version 0.1")
+    monitor.write("Reactor Controller; Version 0.1")
     monitor.setCursorPos(2,2)
     local filledString = string.rep("=", size.x-2)
     monitor.write(filledString)
 
     monitor.setCursorPos(1,4)
-    monitor.write("Reactor Status: ")
+    monitor.write("Status: ")
     if (Active) then
         monitor.setTextColor(colors.green)
     end
