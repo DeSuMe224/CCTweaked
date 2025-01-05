@@ -178,13 +178,13 @@ local function postStatusUpdate()
 
 
     monitor.setTextColor(colors.white)
-    drawRectangle(size.x, size.y-2,size.x, size.y-8, false, "|", "blue")
+    drawRectangle(size.x/2, size.y-2,size.x/2, size.y-8, false, "|", "blue")
 
     local buttons = {
-        { label = "Kp+", x1 = 51, y1 = 9, x2 = 62, y2 = 7, action = function() Kp = Kp + 0.1 end },
-        { label = "Kp-", x1 = 63, y1 = 9, x2 = 74, y2 = 7, action = function() Kp = math.max(Kp - 0.1, 0) end },
-        { label = "Ki+", x1 = 51, y1 = 6, x2 = 62, y2 = 4, action = function() Ki = Ki + 0.01 end },
-        { label = "Ki-", x1 = 63, y1 = 6, x2 = 74, y2 = 4, action = function() Ki = math.max(Ki - 0.01, 0) end },
+        { label = "Kp+", x1 = size.x/2+1, y1 = size.y-8, x2 = size.x/2+11, y2 = size.y-6, action = function() Kp = Kp + 0.1 end },
+        { label = "Kp-", x1 = size.x/2+12, y1 = size.y-8, x2 = size.x/2+21, y2 = size.y-6, action = function() Kp = math.max(Kp - 0.1, 0) end },
+        { label = "Ki+", x1 = size.x/2+1, y1 = size.y-5, x2 = size.x/2+11, y2 = size.y-3, action = function() Ki = Ki + 0.01 end },
+        { label = "Ki-", x1 = size.x/2+12, y1 = size.y-5, x2 = size.x/2+21, y2 = 3, action = function() Ki = math.max(Ki - 0.01, 0) end },
     }
 
     -- Draw buttons
