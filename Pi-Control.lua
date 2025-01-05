@@ -17,6 +17,8 @@ local DefaultControlRodsValue = 80
 local EmergencyControlRodsValue = 10
 local Kp = 1.0
 local Ki = 0.1
+local StoragePercent = 0
+local FuelPercent = 0
 
 local StartUpMessage = {
     "Das ist Saschas ReaktorController!",
@@ -31,6 +33,7 @@ local buttons = {
     { label = "Ki-", x1 = 63, y1 = 6, x2 = 74, y2 = 4, action = function() Ki = math.max(Ki - 0.01, 0) end },
 }
 
+-- Initialize monitor
 local function initMonitor()
     monitor.clear()
     monitor.setTextScale(0.8)
@@ -45,6 +48,7 @@ local function initMonitor()
     return true
 end
 
+-- Draw a rectangle on the monitor
 local function drawRectangle(x1, y1, x2, y2, infill, linestyle, color)
     if x1 > x2 then x1, x2 = x2, x1 end
     if y1 > y2 then y1, y2 = y2, y1 end
@@ -55,14 +59,11 @@ local function drawRectangle(x1, y1, x2, y2, infill, linestyle, color)
     if not infill then
         monitor.setCursorPos(x1, y1)
         monitor.write(string.rep(linestyle, x2 - x1 + 1))
-
         monitor.setCursorPos(x1, y2)
         monitor.write(string.rep(linestyle, x2 - x1 + 1))
-
         for y = y1 + 1, y2 - 1 do
             monitor.setCursorPos(x1, y)
             monitor.write(linestyle)
-
             monitor.setCursorPos(x2, y)
             monitor.write(linestyle)
         end
@@ -76,6 +77,7 @@ local function drawRectangle(x1, y1, x2, y2, infill, linestyle, color)
     monitor.setTextColor(colors.white)
 end
 
+-- Draw a button
 local function drawButton(button)
     drawRectangle(button.x1, button.y1, button.x2, button.y2, true, " ", "gray")
     local centerX = math.floor((button.x1 + button.x2) / 2)
@@ -84,10 +86,12 @@ local function drawButton(button)
     monitor.write(button.label)
 end
 
+-- Check if a button was pressed
 local function isButtonPressed(button, x, y)
     return x >= button.x1 and x <= button.x2 and y >= button.y2 and y <= button.y1
 end
 
+-- Handle monitor touch events
 local function handleTouch()
     while true do
         local event, side, x, y = os.pullEvent("monitor_touch")
@@ -100,6 +104,7 @@ local function handleTouch()
     end
 end
 
+-- Post status update on the monitor
 local function postStatusUpdate()
     monitor.clear()
     monitor.setTextColor(colors.white)
@@ -129,17 +134,47 @@ local function postStatusUpdate()
     end
 end
 
--- Reactor Control and Main Logic (same as before)
+-- Reactor control logic
+local function controlReactor()
+    Capacity = reactor.getEnergyCapacity()
+    while true do
+        Active = reactor.getActive()
+        Storage = reactor.getEnergyStored()
+        StoragePercent = Storage / Capacity
+        ControlRodsLevel = reactor.getControlRodsLevels()
+        FuelAmount = reactor.getFuelAmount()
+        local FuelCapacity = reactor.getFuelAmountMax()
+        FuelPercent = FuelAmount / FuelCapacity
+
+        -- Reactor control based on energy storage levels
+        if StoragePercent > 0.6 then
+            reactor.setActive(false)
+            reactor.setAllControlRodLevels(DefaultControlRodsValue)
+        elseif StoragePercent < 0.3 then
+            reactor.setActive(true)
+        end
+
+        if StoragePercent < 0.05 then
+            reactor.setAllControlRodLevels(EmergencyControlRodsValue)
+        end
+
+        postStatusUpdate()
+        sleep(0.1)
+    end
+end
+
 -- Main function
 local function main()
     initMonitor()
-    startUpScreen()
-    while not findReactor() do
-        print("Reactor not found. Well... damn. I'll try again")
-        sleep(1)
+    postStatusUpdate()
+    while not reactor do
+        reactor = peripheral.find("BigReactors-Reactor")
+        if not reactor then
+            print("Reactor not found. Retrying...")
+            sleep(1)
+        end
     end
-    print("Reactor found, this is where the fun begins!")
-    sleep(1)
+    print("Reactor found. Starting control loop...")
     parallel.waitForAny(controlReactor, handleTouch)
 end
 
