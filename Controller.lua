@@ -23,6 +23,11 @@ local DefaultControlRodsValue = 80
 local EmergencyControlRodsValue = 10
 local Kp = 1.0
 local Ki = 0.1
+local targetCapacity = 0.75 -- 75% target
+
+-- Variables
+local integral = 0 -- Integral term
+local lastError = 0 -- Previous error for future improvements if using PID
 
 size.x,size.y= monitor.getSize()
     graphic_window.xmin=(1)
@@ -42,6 +47,12 @@ local StartUpMessage = {
     "",
     "Huldigt dem BigReactor!"
 }
+
+local function constrain(value, min, max)
+    if value < min then return min end
+    if value > max then return max end
+    return value
+end
 
 
 local function initMonitor()
@@ -266,23 +277,53 @@ local function controlReactor()
         FuelAmount=reactor.getFuelAmount()
         FuelCapacity=reactor.getFuelAmountMax()
         FuelPercent = FuelAmount/FuelCapacity
-        if (StoragePercent > 0.6) then
-            reactor.setActive(false)
-            reactor.setAllControlRodLevels(DefaultControlRodsValue)
-        end
-    
-        if (StoragePercent < 0.3) then
-            reactor.setActive(true)
-        end 
 
-        if (StoragePercent<0.05) then
-            reactor.setAllControlRodLevels(EmergencyControlRodsValue)
-        end
+        -- Calculate error
+        local error = targetCapacity - currentCapacity
+
+        -- Update integral term
+        integral = integral + error * updateInterval
+
+        -- Calculate PI output
+        local controlOutput = (Kp * error) + (Ki * integral)
+
+        -- Convert control output to control rod position (0-100%)
+        local controlRodPosition = constrain(controlOutput * 100, 0, 100)
+
+        -- Set control rod position
+        reactor.setAllControlRodLevels(math.floor(controlRodPosition))
+
+        -- Log for debugging
+        print(string.format(
+            "Current: %.2f%%, Target: %.2f%%, Error: %.2f, Integral: %.2f, Rod Position: %.2f%%",
+            currentCapacity * 100, targetCapacity * 100, error, integral, controlRodPosition
+        ))
+
+
+
+
+
+
+
+
+
+        --if (StoragePercent > 0.6) then
+        --    reactor.setActive(false)
+        --    reactor.setAllControlRodLevels(DefaultControlRodsValue)
+        --end
+    
+        --if (StoragePercent < 0.3) then
+        --    reactor.setActive(true)
+        --end 
+
+        --if (StoragePercent<0.05) then
+        --    reactor.setAllControlRodLevels(EmergencyControlRodsValue)
+        --end
 
         
         postStatusUpdate()
         generateGraphs()
-    sleep(0.1)
+    sleep(0.0625)
     end 
 end
 
