@@ -43,7 +43,7 @@ size.x,size.y= monitor.getSize()
 
 
 local StartUpMessage = {
-    "Das ist Saschas ReaktorController!",
+    "Das ist mein ReaktorController!",
     "",
     "Huldigt dem BigReactor!"
 }
@@ -127,7 +127,7 @@ local function postStatusUpdate()
     monitor.setTextColor(colors.white)
 
     monitor.setCursorPos(1,size.y)
-    monitor.write("Reactor Controller; Version 1.0")
+    monitor.write("Reactor Controller; Version 1.1")
     monitor.setCursorPos(2,size.y-1)
     local filledString = string.rep("=", size.x-2)
     monitor.write(filledString)
