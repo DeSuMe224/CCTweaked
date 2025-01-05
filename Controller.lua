@@ -22,7 +22,7 @@ local FuelAmount
 local DefaultControlRodsValue = 80
 local EmergencyControlRodsValue = 10
 local Kp = 12.0
-local targetCapacity = 0.75 -- 75% target
+local targetCapacity = 0.50 -- 75% target
 local Ki=0.0
 
 -- Variables
@@ -296,29 +296,7 @@ local function controlReactor()
         --    "Current: %.2f%%, Target: %.2f%%, Error: %.2f, Integral: %.2f, Rod Position: %.2f%%",
         --    StoragePercent * 100, targetCapacity * 100, error, integral, controlRodPosition
         --))
-
-
-
-
-
-
-
-
-
-        --if (StoragePercent > 0.6) then
-        --    reactor.setActive(false)
-        --    reactor.setAllControlRodLevels(DefaultControlRodsValue)
-        --end
-    
-        --if (StoragePercent < 0.3) then
-        --    reactor.setActive(true)
-        --end 
-
-        --if (StoragePercent<0.05) then
-        --    reactor.setAllControlRodLevels(EmergencyControlRodsValue)
-        --end
-
-        
+       
         postStatusUpdate()
         generateGraphs()
     sleep(0.1)
