@@ -46,9 +46,10 @@ end
 local function drawRectangle(x1, y1, x2, y2, infill, linestyle, color)
     if x1 > x2 then x1, x2 = x2, x1 end
     if y1 > y2 then y1, y2 = y2, y1 end
-
-    monitor.setBackgroundColor(colors[color])
-
+    if (linestyle==" ") then
+        monitor.setBackgroundColor(colors[color])
+    end
+    monitor.setTextColor(colors[color])
     if not infill then
         monitor.setCursorPos(x1, y1)
         monitor.write(string.rep(linestyle, x2 - x1 + 1))
@@ -71,6 +72,7 @@ local function drawRectangle(x1, y1, x2, y2, infill, linestyle, color)
     end
 
     monitor.setBackgroundColor(colors.black)
+    monitor.setTextColor(colors.black)
 end
 
 
@@ -94,7 +96,7 @@ local function postStatusUpdate()
     monitor.clear()
     monitor.setTextColor(colors.white)
     monitor.setCursorPos(1,size.y)
-    monitor.write("Reactor Controller; Version 0.2")
+    monitor.write("Reactor Controller; Version 1.0")
     monitor.setCursorPos(2,size.y-1)
     local filledString = string.rep("=", size.x-2)
     monitor.write(filledString)
@@ -120,18 +122,25 @@ local function postStatusUpdate()
     --monitor.write("Reactor Storage Volume: ")
     --monitor.write(Storage)
 
+    monitor.setCursorPos(1,size.y-6)
+    monitor.write("Percentage of Fuel Capacity: ")
+    monitor.write(string.format("%.2f", FuelPercent))
+    monitor.write("%")
+
     monitor.setCursorPos(1,size.y-7)
-    monitor.write("Percentage of used Capacity: ")
+    monitor.write("Percentage of Energy Capacity: ")
     monitor.write(string.format("%.2f", StoragePercent))
+    monitor.write("%")
 
     monitor.setCursorPos(1,size.y-8)
     monitor.write("ControlRodsLevel: ")
-    monitor.write(ControlRodsLevel[1])
+    monitor.write(ControlRodsLevel[1]/100)
+    monitor.write("%")
 
     monitor.setCursorPos(2,size.y-9)
     monitor.write(filledString)
 
-    drawRectangle(graphic_window.xmax, size.y-2,graphic_window.xmax, size.y-8, false, "||", "white")
+    drawRectangle(graphic_window.xmax, size.y-2,graphic_window.xmax, size.y-8, false, "|", "orange")
     monitor.setCursorPos(graphic_window.xmax+1,size.y-9)
     monitor.setTextColor(colors.orange)
     monitor.write("Warnings:")
@@ -164,7 +173,7 @@ local function generateGraphs()
 
     --FuelLevel
     BufferString = "Fuel Storage"
-    monitor.setCursorPos((graphic_window.xmax/2)-((#BufferString))/2,18)
+    monitor.setCursorPos((graphic_window.xmax/2)-((#BufferString)/2),18)
     monitor.write(BufferString)
 
     drawRectangle(2,20,graphic_window.xmax-1,33,true," ","gray")
@@ -178,7 +187,7 @@ local function generateGraphs()
 
     --Controlrods
     BufferString = "ControlRods Position"
-    monitor.setCursorPos((graphic_window.xmax+(((size.x)/3)/2))-((#BufferString))/2,1)
+    monitor.setCursorPos((graphic_window.xmax+(((size.x)/4)/2))-((#BufferString))/2,1)
     monitor.write(BufferString)
 
     drawRectangle(graphic_window.xmax+1,3,size.x-1,graphic_window.ymax-1,true," ","gray")
