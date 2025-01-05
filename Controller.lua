@@ -154,7 +154,7 @@ local function postStatusUpdate()
     monitor.setTextColor(colors.white)
 
     monitor.setCursorPos(1,size.y-4)
-    monitor.write("KP: ")
+    monitor.write("Kp: ")
     monitor.write(Kp)
 
     monitor.setCursorPos(1,size.y-5)
@@ -162,7 +162,7 @@ local function postStatusUpdate()
     monitor.write(Ki)
 
     monitor.setCursorPos(1,size.y-6)
-    monitor.write("Percentage of Fuel Capacity: ")
+    monitor.write("Ki: ")
     monitor.write(string.format("%.2f", FuelPercent))
     monitor.write("%")
 
@@ -289,7 +289,8 @@ local function main()
     end
     print("Reactor found, this is where the fun begins!")
     sleep(1)    
-    controlReactor()
+    parallel.waitForAny(controlReactor, handleTouch)
+
 
 
 
