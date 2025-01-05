@@ -120,9 +120,13 @@ end
 local function handleTouch()
     while true do
         local event, side, x, y = os.pullEvent("monitor_touch")
+        print(string.format("Touch detected at x: %d, y: %d", x, y))
         for _, button in ipairs(buttons) do
+            print(string.format("Checking button: %s, x1: %d, y1: %d, x2: %d, y2: %d", 
+                button.label, button.x1, button.y1, button.x2, button.y2))
             if isButtonPressed(button, x, y) then
                 button.action()
+                print("Button pressed:", button.label)
                 postStatusUpdate()
             end
         end
@@ -160,11 +164,11 @@ local function postStatusUpdate()
     monitor.write(Kp)
 
     monitor.setCursorPos(1,size.y-5)
-    monitor.write("Reactor Storage Volume: ")
+    monitor.write("Ki: ")
     monitor.write(Ki)
 
     monitor.setCursorPos(1,size.y-6)
-    monitor.write("Ki: ")
+    monitor.write("Fuel Status: ")
     monitor.write(string.format("%.2f", FuelPercent))
     monitor.write("%")
 
