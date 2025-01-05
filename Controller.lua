@@ -186,7 +186,7 @@ local function generateGraphs()
     end
 
     --Controlrods
-    BufferString = "ControlRods Position"
+    BufferString = "ControlRods-Position"
     monitor.setCursorPos((graphic_window.xmax+(((size.x)/4)/2))-((#BufferString))/2,1)
     monitor.write(BufferString)
 
