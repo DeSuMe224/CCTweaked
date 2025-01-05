@@ -14,10 +14,13 @@ local graphic_window = {
 
 
 --Reactor Variables
-local Active=false
-local Storage=0
-local Capacity=0
-local ControlRodsLevel=0
+local Active = false
+local Storage = 0
+local Capacity = 0
+local ControlRodsLevel = 0
+local FuelAmount
+local DefaultControlRodsValue = 85
+local EmergencyControlRodsValue = 10
 
 local StartUpMessage = {
     "Das ist Saschas ReaktorController!",
@@ -27,6 +30,7 @@ local StartUpMessage = {
 
 
 local function initMonitor()
+    monitor.clear()
     monitor.setTextScale(0.8)
     monitor.setTextColor(colors.green)
     monitor.setBackgroundColor(colors.black)
@@ -39,7 +43,7 @@ local function initMonitor()
     return true
 end
 
-local function drawRectangle(x1, y1, x2, y2, infill, color)
+local function drawRectangle(x1, y1, x2, y2, infill, linestyle, color)
     if x1 > x2 then x1, x2 = x2, x1 end
     if y1 > y2 then y1, y2 = y2, y1 end
 
@@ -47,22 +51,22 @@ local function drawRectangle(x1, y1, x2, y2, infill, color)
 
     if not infill then
         monitor.setCursorPos(x1, y1)
-        monitor.write(string.rep(" ", x2 - x1 + 1))
+        monitor.write(string.rep(linestyle, x2 - x1 + 1))
 
         monitor.setCursorPos(x1, y2)
-        monitor.write(string.rep(" ", x2 - x1 + 1))
+        monitor.write(string.rep(linestyle, x2 - x1 + 1))
 
         for y = y1 + 1, y2 - 1 do
             monitor.setCursorPos(x1, y)
-            monitor.write(" ")
+            monitor.write(linestyle)
 
             monitor.setCursorPos(x2, y)
-            monitor.write(" ")
+            monitor.write(linestyle)
         end
     else
         for y = y1, y2 do
             monitor.setCursorPos(x1, y)
-            monitor.write(string.rep(" ", x2 - x1 + 1))
+            monitor.write(string.rep(linestyle, x2 - x1 + 1))
         end
     end
 
@@ -127,6 +131,19 @@ local function postStatusUpdate()
     monitor.setCursorPos(2,size.y-9)
     monitor.write(filledString)
 
+    drawRectangle(size.x/2, size.y-8,size.x/2, size.y-8, false, "||", "white")
+    monitor.setCursorPos(size.x/2,size.y-9)
+    monitor.setTextColor(colors.orange)
+    monitor.write("Warnings:")
+    if(FuelAmount<(0.9*FuelCapacity)) then
+        monitor.setCursorPos(size.x/2,size.y-8)
+        monitor.write("Schaff mal mehr Uran ran alder, langsam wirds knapp")
+    end 
+    monitor.setTextColor(colors.white)
+
+
+
+
 end
 
 
@@ -135,9 +152,44 @@ local function generateGraphs()
     monitor.setCursorPos((graphic_window.xmax/2)-((#BufferString))/2,1)
     monitor.write(BufferString)
 
-    drawRectangle(2,3,graphic_window.xmax-1,16,true,"gray")
-    drawRectangle(3,4,graphic_window.xmax-2,15,true,"red")
-    drawRectangle(3,4,(graphic_window.xmax-2)*StoragePercent,15,true,"green")
+    --Energylevel
+    drawRectangle(2,3,graphic_window.xmax-1,16,true," ","gray")
+    drawRectangle(3,4,graphic_window.xmax-2,15,true," ","red")
+    if ((graphic_window.xmax-2)*StoragePercent<3) then
+        drawRectangle(3,4,3,15,true," ","green")
+    else
+
+        drawRectangle(3,4,(graphic_window.xmax-2)*StoragePercent,15,true," ","green")
+    end
+
+    --FuelLevel
+    BufferString = "Fuel Storage"
+    monitor.setCursorPos((graphic_window.xmax/2)-((#BufferString))/2,18)
+    monitor.write(BufferString)
+
+    drawRectangle(2,20,graphic_window.xmax-1,33,true," ","gray")
+    drawRectangle(3,21,graphic_window.xmax-2,32,true," ","red")
+    if ((graphic_window.xmax-2)*FuelCapacity<3) then
+        drawRectangle(3,21,3,32,true," ","yellow")
+    else
+
+        drawRectangle(3,21,(graphic_window.xmax-2)*FuelCapacity,32,true," ","yellow")
+    end
+
+    --Controlrods
+    BufferString = "ControlRods Position"
+    monitor.setCursorPos((graphic_window.xmax+(((size.x)/3)/2))-((#BufferString))/2,1)
+    monitor.write(BufferString)
+
+    drawRectangle(graphic_window.xmax+1,3,size.x-1,graphic_window.ymax-1,true," ","gray")
+    drawRectangle(graphic_window.xmax+2,3,size.x-2,graphic_window.ymax-2,true," ","yellow")
+    if ((graphic_window.ymax-2)*ControlRodsLevel/100<3) then
+        drawRectangle(graphic_window.xmax+4,3,size.x-4,3,true," ","yellow")
+    else
+
+        drawRectangle(graphic_window.xmax+4,3,size.x-4,(graphic_window.ymax-2)*ControlRodsLevel/100,true," ","yellow")
+    end
+
 
 end
 
@@ -149,14 +201,23 @@ local function controlReactor()
         Storage= reactor.getEnergyStored()
         StoragePercent = Storage/Capacity
         ControlRodsLevel=reactor.getControlRodsLevels()
-        
+        FuelAmount=reactor.getFuelAmount()
+        FuelCapacity=reactor.getFuelCapacity()
+        FuelPercent = FuelAmount/FuelCapacity
         if (StoragePercent > 0.6) then
             reactor.setActive(false)
+            reactor.setAllControlRodLevels(DefaultControlRodsValue)
         end
     
         if (StoragePercent < 0.3) then
             reactor.setActive(true)
         end 
+
+        if (StoragePercent<0.05) then
+            reactor.setAllControlRodLevels(EmergencyControlRodsValue)
+        end
+
+        
         postStatusUpdate()
         generateGraphs()
     sleep(0.1)
