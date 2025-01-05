@@ -24,6 +24,18 @@ local EmergencyControlRodsValue = 10
 local Kp = 1.0
 local Ki = 0.1
 
+size.x,size.y= monitor.getSize()
+    graphic_window.xmin=(1)
+    graphic_window.xmax=(3/4*size.x)
+    graphic_window.ymin=(1)
+    graphic_window.ymax=(size.y-11)
+    local buttons = {
+        { label = "Kp+", x1 = size.x/2+2, y1 = size.y-8, x2 = size.x/2+12, y2 = size.y-6, action = function() Kp = Kp + 0.1 end },
+        { label = "Kp-", x1 = size.x/2+13, y1 = size.y-8, x2 = size.x/2+22, y2 = size.y-6, action = function() Kp = math.max(Kp - 0.1, 0) end },
+        { label = "Ki+", x1 = size.x/2+2, y1 = size.y-4, x2 = size.x/2+12, y2 = size.y-2, action = function() Ki = Ki + 0.01 end },
+        { label = "Ki-", x1 = size.x/2+13, y1 = size.y-4, x2 = size.x/2+22, y2 = size.y-2, action = function() Ki = math.max(Ki - 0.01, 0) end },
+    }
+
 
 local StartUpMessage = {
     "Das ist Saschas ReaktorController!",
@@ -37,17 +49,6 @@ local function initMonitor()
     monitor.setTextScale(0.8)
     monitor.setTextColor(colors.green)
     monitor.setBackgroundColor(colors.black)
-    size.x,size.y= monitor.getSize()
-    graphic_window.xmin=(1)
-    graphic_window.xmax=(3/4*size.x)
-    graphic_window.ymin=(1)
-    graphic_window.ymax=(size.y-11)
-    local buttons = {
-        { label = "Kp+", x1 = size.x/2+2, y1 = size.y-8, x2 = size.x/2+12, y2 = size.y-6, action = function() Kp = Kp + 0.1 end },
-        { label = "Kp-", x1 = size.x/2+13, y1 = size.y-8, x2 = size.x/2+22, y2 = size.y-6, action = function() Kp = math.max(Kp - 0.1, 0) end },
-        { label = "Ki+", x1 = size.x/2+2, y1 = size.y-4, x2 = size.x/2+12, y2 = size.y-2, action = function() Ki = Ki + 0.01 end },
-        { label = "Ki-", x1 = size.x/2+13, y1 = size.y-4, x2 = size.x/2+22, y2 = size.y-2, action = function() Ki = math.max(Ki - 0.01, 0) end },
-    }
     monitor.setCursorPos(1,1)
     return true
 end
