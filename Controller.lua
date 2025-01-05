@@ -135,9 +135,9 @@ local function generateGraphs()
     monitor.setCursorPos((graphic_window.xmax/2)-((#BufferString))/2,1)
     monitor.write(BufferString)
 
-    drawRectangle(2,2,graphic_window.xmax-1,8,false,blue)
-
-
+    drawRectangle(2,3,graphic_window.xmax-1,16,true,"gray")
+    drawRectangle(3,4,graphic_window.xmax-2,15,true,"red")
+    drawRectangle(3,4,(graphic_window.xmax-2)*StoragePercent,15,true,"green")
 
 end
 
