@@ -184,7 +184,7 @@ local function postStatusUpdate()
         { label = "Kp+", x1 = size.x/2+1, y1 = size.y-8, x2 = size.x/2+11, y2 = size.y-6, action = function() Kp = Kp + 0.1 end },
         { label = "Kp-", x1 = size.x/2+12, y1 = size.y-8, x2 = size.x/2+21, y2 = size.y-6, action = function() Kp = math.max(Kp - 0.1, 0) end },
         { label = "Ki+", x1 = size.x/2+1, y1 = size.y-5, x2 = size.x/2+11, y2 = size.y-3, action = function() Ki = Ki + 0.01 end },
-        { label = "Ki-", x1 = size.x/2+12, y1 = size.y-5, x2 = size.x/2+21, y2 = size.y-6, action = function() Ki = math.max(Ki - 0.01, 0) end },
+        { label = "Ki-", x1 = size.x/2+12, y1 = size.y-5, x2 = size.x/2+21, y2 = size.y-3, action = function() Ki = math.max(Ki - 0.01, 0) end },
     }
 
     -- Draw buttons
