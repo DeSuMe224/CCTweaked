@@ -1,5 +1,9 @@
 Hi.
 
+![grafik](https://github.com/user-attachments/assets/8f8e73d4-7ba6-4ee4-bbf5-b6dbda15ded8)
+
+
+
 Welcome aboard, this is my ReactorController, initially for ATM10. I wrote this for the Server my friends and i were playing on. 
 
 This was my first Lua Project, therefore this code isn't optimized or anything. It's more or less my first playground for Lua. This Project contains the code, for an P-Controller for a 7x7x12-reinforced Reactor, cooled with solid platinum blocks, a advanced Computer and a 5x4-advanced Monitor array.
