@@ -22,12 +22,12 @@ local FuelAmount
 local DefaultControlRodsValue = 80
 local EmergencyControlRodsValue = 10
 local Kp = 12.0
-local Ki = 0.0
 local targetCapacity = 0.75 -- 75% target
+local Ki=0.0
 
 -- Variables
-local integral = 0 -- Integral term
 local lastError = 0 -- Previous error for future improvements if using PID
+local integral = 0
 
 size.x,size.y= monitor.getSize()
     graphic_window.xmin=(1)
@@ -37,8 +37,8 @@ size.x,size.y= monitor.getSize()
     local buttons = {
         { label = "Kp+", x1 = size.x/2+2, y1 = size.y-8, x2 = size.x/2+12, y2 = size.y-6, action = function() Kp = Kp + 0.5 end },
         { label = "Kp-", x1 = size.x/2+13, y1 = size.y-8, x2 = size.x/2+22, y2 = size.y-6, action = function() Kp = math.max(Kp - 0.5, 0) end },
-        { label = "Ki+", x1 = size.x/2+2, y1 = size.y-4, x2 = size.x/2+12, y2 = size.y-2, action = function() Ki = Ki + 0.01 end },
-        { label = "Ki-", x1 = size.x/2+13, y1 = size.y-4, x2 = size.x/2+22, y2 = size.y-2, action = function() Ki = math.max(Ki - 0.01, 0) end },
+        { label = "TC+", x1 = size.x/2+2, y1 = size.y-4, x2 = size.x/2+12, y2 = size.y-2, action = function() targetCapacity = targetCapacity + 0.05 end },
+        { label = "TC-", x1 = size.x/2+13, y1 = size.y-4, x2 = size.x/2+22, y2 = size.y-2, action = function() targetCapacity = math.max(targetCapacity - 0.05, 0) end },
     }
 
 
@@ -149,9 +149,9 @@ local function postStatusUpdate()
     monitor.write("Kp: ")
     monitor.write(Kp)
 
-    monitor.setCursorPos(1,size.y-5)
-    monitor.write("Ki: ")
-    monitor.write(Ki)
+    --monitor.setCursorPos(1,size.y-5)
+    --monitor.write("Ki: ")
+    --monitor.write(Ki)
 
     monitor.setCursorPos(1,size.y-6)
     monitor.write("Fuel Status: ")
@@ -206,13 +206,10 @@ end
 local function handleTouch()
     while true do
         local event, side, x, y = os.pullEvent("monitor_touch")
-        --print(string.format("Touch detected at x: %d, y: %d", x, y))
         for _, button in ipairs(buttons) do
-            --print(string.format("Checking button: %s, x1: %d, y1: %d, x2: %d, y2: %d", 
-            --    button.label, button.x1, button.y1, button.x2, button.y2))
+            
             if isButtonPressed(button, x, y) then
                 button.action()
-                --print("Button pressed:", button.label)
                 postStatusUpdate()
             end
         end
@@ -233,6 +230,8 @@ local function generateGraphs()
 
         drawRectangle(3,size.y/13,(graphic_window.xmax-2)*StoragePercent,size.y/3.25-1,true," ","green")
     end
+    drawRectangle((graphic_window.xmax-2)*targetCapacity,size.y/13,(graphic_window.xmax-2)*targetCapacity, size.y/3.25-1,false,"|","blue")
+
 
     --FuelLevel
     BufferString = "Fuel Storage"
@@ -242,10 +241,10 @@ local function generateGraphs()
     drawRectangle(2,size.y/2.6,graphic_window.xmax-1,size.y/1.57,true," ","gray")
     drawRectangle(3,size.y/2.6+1,graphic_window.xmax-2,size.y/1.57-1,true," ","red")
     if (FuelPercent<0.1) then
-        drawRectangle(3,size.y/2.47,3,size.y/1.625,true," ","yellow")
+        drawRectangle(3,size.y/2.47,3,size.y/1.625+1,true," ","yellow")
     else
 
-        drawRectangle(3,size.y/2.47,(graphic_window.xmax-2)*FuelPercent,size.y/1.625,true," ","yellow")
+        drawRectangle(3,size.y/2.47,(graphic_window.xmax-2)*FuelPercent,size.y/1.625+1,true," ","yellow")
     end
 
     --Controlrods
@@ -293,10 +292,10 @@ local function controlReactor()
         reactor.setAllControlRodLevels(100-math.floor(controlRodPosition))
 
         -- Log for debugging
-        print(string.format(
-            "Current: %.2f%%, Target: %.2f%%, Error: %.2f, Integral: %.2f, Rod Position: %.2f%%",
-            StoragePercent * 100, targetCapacity * 100, error, integral, controlRodPosition
-        ))
+        --print(string.format(
+        --    "Current: %.2f%%, Target: %.2f%%, Error: %.2f, Integral: %.2f, Rod Position: %.2f%%",
+        --    StoragePercent * 100, targetCapacity * 100, error, integral, controlRodPosition
+        --))
 
 
 
