@@ -128,6 +128,15 @@ local function postStatusUpdate()
     monitor.setCursorPos(2, size.y - 9)
     monitor.write(filledString)
 
+
+    local buttons = {
+        { label = "Kp+", x1 = 51, y1 = 9, x2 = 62, y2 = 7, action = function() Kp = Kp + 0.1 end },
+        { label = "Kp-", x1 = 63, y1 = 9, x2 = 74, y2 = 7, action = function() Kp = math.max(Kp - 0.1, 0) end },
+        { label = "Ki+", x1 = 51, y1 = 6, x2 = 62, y2 = 4, action = function() Ki = Ki + 0.01 end },
+        { label = "Ki-", x1 = 63, y1 = 6, x2 = 74, y2 = 4, action = function() Ki = math.max(Ki - 0.01, 0) end },
+    }
+    
+
     -- Draw buttons
     for _, button in ipairs(buttons) do
         drawButton(button)

@@ -92,6 +92,33 @@ local function findReactor()
     return true 
 end
 
+-- Draw a button
+local function drawButton(button)
+    drawRectangle(button.x1, button.y1, button.x2, button.y2, true, " ", "gray")
+    local centerX = math.floor((button.x1 + button.x2) / 2)
+    local centerY = math.floor((button.y1 + button.y2) / 2)
+    monitor.setCursorPos(centerX - math.floor(#button.label / 2), centerY)
+    monitor.write(button.label)
+end
+
+-- Check if a button was pressed
+local function isButtonPressed(button, x, y)
+    return x >= button.x1 and x <= button.x2 and y >= button.y2 and y <= button.y1
+end
+
+-- Handle monitor touch events
+local function handleTouch()
+    while true do
+        local event, side, x, y = os.pullEvent("monitor_touch")
+        for _, button in ipairs(buttons) do
+            if isButtonPressed(button, x, y) then
+                button.action()
+                postStatusUpdate()
+            end
+        end
+    end
+end
+
 local function postStatusUpdate()
     monitor.clear()
     monitor.setTextColor(colors.white)
@@ -148,9 +175,22 @@ local function postStatusUpdate()
         monitor.setCursorPos(graphic_window.xmax+1,size.y-8)
         monitor.write("Schaff mal mehr Uran ran alder, langsam wirds knapp")
     end 
+
+
     monitor.setTextColor(colors.white)
+    drawRectangle(size.x, size.y-2,size.x, size.y-8, false, "|", "blue")
 
+    local buttons = {
+        { label = "Kp+", x1 = 51, y1 = 9, x2 = 62, y2 = 7, action = function() Kp = Kp + 0.1 end },
+        { label = "Kp-", x1 = 63, y1 = 9, x2 = 74, y2 = 7, action = function() Kp = math.max(Kp - 0.1, 0) end },
+        { label = "Ki+", x1 = 51, y1 = 6, x2 = 62, y2 = 4, action = function() Ki = Ki + 0.01 end },
+        { label = "Ki-", x1 = 63, y1 = 6, x2 = 74, y2 = 4, action = function() Ki = math.max(Ki - 0.01, 0) end },
+    }
 
+    -- Draw buttons
+    for _, button in ipairs(buttons) do
+        drawButton(button)
+    end
 
 
 end
