@@ -102,43 +102,11 @@ local function findReactor()
     return true 
 end
 
--- Draw a button
-local function drawButton(button)
-    drawRectangle(button.x1, button.y1, button.x2, button.y2, true, " ", "gray")
-    local centerX = math.floor((button.x1 + button.x2) / 2)
-    local centerY = math.floor((button.y1 + button.y2) / 2)
-    monitor.setCursorPos(centerX - math.floor(#button.label / 2), centerY)
-    monitor.write(button.label)
-end
 
--- Check if a button was pressed
-local function isButtonPressed(button, x, y)
-    return x >= button.x1 and x <= button.x2 and y <= button.y2 and y >= button.y1
-end
-
--- Handle monitor touch events
-local function handleTouch()
-    while true do
-        local event, side, x, y = os.pullEvent("monitor_touch")
-        print(string.format("Touch detected at x: %d, y: %d", x, y))
-        for _, button in ipairs(buttons) do
-            print(string.format("Checking button: %s, x1: %d, y1: %d, x2: %d, y2: %d", 
-                button.label, button.x1, button.y1, button.x2, button.y2))
-            if isButtonPressed(button, x, y) then
-                button.action()
-                print("Button pressed:", button.label)
-                postStatusUpdate()
-            end
-        end
-    end
-end
 
 local function postStatusUpdate()
     monitor.clear()
     monitor.setTextColor(colors.white)
-
-    
-
 
     monitor.setCursorPos(1,size.y)
     monitor.write("Reactor Controller; Version 1.0")
@@ -210,6 +178,36 @@ local function postStatusUpdate()
 
 end
 
+-- Draw a button
+local function drawButton(button)
+    drawRectangle(button.x1, button.y1, button.x2, button.y2, true, " ", "gray")
+    local centerX = math.floor((button.x1 + button.x2) / 2)
+    local centerY = math.floor((button.y1 + button.y2) / 2)
+    monitor.setCursorPos(centerX - math.floor(#button.label / 2), centerY)
+    monitor.write(button.label)
+end
+
+-- Check if a button was pressed
+local function isButtonPressed(button, x, y)
+    return x >= button.x1 and x <= button.x2 and y <= button.y2 and y >= button.y1
+end
+
+-- Handle monitor touch events
+local function handleTouch()
+    while true do
+        local event, side, x, y = os.pullEvent("monitor_touch")
+        print(string.format("Touch detected at x: %d, y: %d", x, y))
+        for _, button in ipairs(buttons) do
+            print(string.format("Checking button: %s, x1: %d, y1: %d, x2: %d, y2: %d", 
+                button.label, button.x1, button.y1, button.x2, button.y2))
+            if isButtonPressed(button, x, y) then
+                button.action()
+                print("Button pressed:", button.label)
+                postStatusUpdate()
+            end
+        end
+    end
+end
 
 local function generateGraphs()
     local BufferString = "Energy Storage"
