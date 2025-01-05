@@ -27,7 +27,6 @@ local StartUpMessage = {
 
 
 local function initMonitor()
-    monitor.clear()
     monitor.setTextScale(0.8)
     monitor.setTextColor(colors.green)
     monitor.setBackgroundColor(colors.black)
@@ -44,7 +43,7 @@ local function drawRectangle(x1, y1, x2, y2, infill, color)
     if x1 > x2 then x1, x2 = x2, x1 end
     if y1 > y2 then y1, y2 = y2, y1 end
 
-   
+    monitor.setBackgroundColor(colors.black)
     monitor.setTextColor(colors[color] or colors.white)
 
     if not infill then
@@ -70,6 +69,7 @@ local function drawRectangle(x1, y1, x2, y2, infill, color)
 
     monitor.setTextColor(colors.white)
 end
+
 
 local function startUpScreen()
     
@@ -144,7 +144,7 @@ end
 
 local function controlReactor()
     Capacity = reactor.getEnergyCapacity()
-    generateGraphs()
+    monitor.clear()
     while (true) do
         Active = reactor.getActive()
         Storage= reactor.getEnergyStored()
@@ -159,6 +159,7 @@ local function controlReactor()
             reactor.setActive(true)
         end 
         postStatusUpdate()
+        generateGraphs()
     sleep(0.1)
     end 
 end
