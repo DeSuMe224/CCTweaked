@@ -13,6 +13,13 @@ local Storage=0
 local Capacity=0
 local ControlRodsLevel=0
 
+local StartUpMessage = {
+    "Das ist Saschas ReaktorController!",
+    "",
+    "Huldigt dem BigReactor!"
+}
+
+
 local function initMonitor()
     monitor.clear()
     monitor.setTextScale(0.8)
@@ -22,12 +29,6 @@ local function initMonitor()
     monitor.setCursorPos(1,1)
     return true
 end
-
-local StartUpMessage = {
-    "Das ist Saschas ReaktorController!",
-    "",
-    "Huldigt dem BigReactor!"
-}
 
 local function startUpScreen()
     
