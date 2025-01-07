@@ -16,7 +16,7 @@ Why is there a PI-Controller in the code, but doesnt get used? Because i impleme
 
 How to install: (if somehow needed?) 
 
-1. wget https://raw.githubusercontent.com/DeSuMe224/CCTweaked/refs/heads/main/Controller.lua Controller.lua 
+1. wget https://raw.githubusercontent.com/DeSuMe224/ExtremeReactors-CCTweakedController/refs/heads/main/Controller.lua? Controller.lua 
 2. Controller
 3. Success!
 
