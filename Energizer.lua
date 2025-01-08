@@ -20,6 +20,7 @@ local Capacity = 0
 local EnergyInserted = 0
 local EnergyExtracted = 0
 local State=""
+local ETA=0
 
 
 
@@ -57,6 +58,26 @@ local function formatNumber(num)
     else
         return string.format("%d FE", num) -- Plain number for values < 1,000
     end
+end
+
+function formatTime(seconds)
+    local units = {
+        { name = "years", value = 60 * 60 * 24 * 365 },  -- 1 year = 365 days
+        { name = "months", value = 60 * 60 * 24 * 30 },  -- 1 month = 30 days
+        { name = "days", value = 60 * 60 * 24 },         -- 1 day = 24 hours
+        { name = "hours", value = 60 * 60 },             -- 1 hour = 60 minutes
+        { name = "minutes", value = 60 },                -- 1 minute = 60 seconds
+        { name = "seconds", value = 1 }                  -- 1 second
+    }
+
+    for _, unit in ipairs(units) do
+        if seconds >= unit.value then
+            local timeInUnit = seconds / unit.value
+            return string.format("%.2f %s", timeInUnit, unit.name)
+        end
+    end
+
+    return string.format("%.2f milliseconds", seconds * 1000)
 end
 
 local function initMonitor()
@@ -139,6 +160,7 @@ local function postStatusUpdate()
         monitor.write("disabled")
     end
     
+    monitor.setTextColor(colors.white)
 
 
     monitor.setCursorPos(1,size.y-3)
@@ -155,33 +177,41 @@ local function postStatusUpdate()
     monitor.setTextColor(colors.white)
 
 
+
     monitor.setCursorPos(1,size.y-4)
+    monitor.write("Time until filled: ")
+    monitor.setTextColor(colors.blue)   
+    monitor.write(formatTime(ETA))
+    monitor.setTextColor(colors.white)
+
+
+    monitor.setCursorPos(1,size.y-5)
     monitor.write("Avarage Energy Extracted: ")
     monitor.write(formatNumber(averageExtracted))
    
 
-    monitor.setCursorPos(1,size.y-5)
+    monitor.setCursorPos(1,size.y-6)
     monitor.write("Avarage Energy Inserted: ")
     monitor.write(formatNumber(averageInserted))
 
 
-    monitor.setCursorPos(1,size.y-6)
+    monitor.setCursorPos(1,size.y-7)
     monitor.write("Total Capacity: ")
     monitor.write(formatNumber(Capacity))
 
-    monitor.setCursorPos(1,size.y-7)
+    monitor.setCursorPos(1,size.y-8)
     monitor.write("Total Energy Stored: ")
     monitor.write(formatNumber(Storage))
 
-    monitor.setCursorPos(1,size.y-8)
+    monitor.setCursorPos(1,size.y-9)
     monitor.write("Storage Coverd: ")
     monitor.write(string.format("%.2f", StoragePercent))
     monitor.write("%")
 
-    monitor.setCursorPos(2,size.y-9)
+    monitor.setCursorPos(2,size.y-10)
     monitor.write(filledString)
 
-    monitor.setCursorPos(1,size.y-9)
+    monitor.setCursorPos(1,size.y-10)
     monitor.setTextColor(colors.lime)
     monitor.write("EnergyStats:")
     monitor.setTextColor(colors.white)
@@ -190,6 +220,7 @@ end
 
 local function generateGraphs()
     local BufferString = "Storage Coverage"
+    monitor.setTextColor(colors.white)
     monitor.setCursorPos((graphic_window.xmax/2)-((#BufferString))/2,1)
     monitor.write(BufferString)
 
@@ -204,7 +235,7 @@ local function generateGraphs()
     end
 
     local StringBuffer=string.format("%.2f", StoragePercent)
-    monitor.setCursorPos((size.x/2)-((#StringBuffer))/2,((size.y/3.25-1)-(size.y/13)/2+size.y/13))
+    monitor.setCursorPos((size.x/2)-((#StringBuffer))/2,size.y/5.3)
     monitor.write(StringBuffer)
 
 
@@ -217,17 +248,14 @@ local function generateGraphs()
     drawRectangle(3,size.y/2.6+1,graphic_window.xmax-2,size.y/1.57-1,true," ","red")
     if (State == "Charging") then
         drawRectangle(3,size.y/2.47,(graphic_window.xmax-2),size.y/1.625+1,true,"+","green")
-        monitor.setTextColor(colors.green)
         
     else
 
         drawRectangle(3,size.y/2.47,(graphic_window.xmax-2),size.y/1.625+1,true,"-","red")
-        monitor.setTextColor(colors.red)
     end
     StringBuffer=State
-    monitor.setCursorPos((size.x/2)-((#StringBuffer))/2,((size.y/3.25-1)-(size.y/13)/2+size.y/13))
+    monitor.setCursorPos((size.x/2)-((#StringBuffer))/2,size.y/2)
     monitor.write(StringBuffer)
-    monitor.setTextColor(colors.white)
 
 end
 
@@ -271,8 +299,10 @@ local function controlEnergizer()
         
         if (EnergyInserted > EnergyExtracted) then
             State = "Charging"
+            ETA=avarageInserted-avarageExtracted
         else
             State = "Decharging"
+            ETA = 0
         end
 
     
