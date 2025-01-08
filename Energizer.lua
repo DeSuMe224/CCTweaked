@@ -174,7 +174,7 @@ local function postStatusUpdate()
 
     monitor.setCursorPos(1,size.y-9)
     monitor.write("Storage Coverd: ")
-    monitor.write(string.format("%.2f %", StoragePercent))
+    monitor.write(string.format("%.2f", StoragePercent))
     monitor.write("%")
 
     monitor.setCursorPos(2,size.y-10)
