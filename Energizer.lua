@@ -299,14 +299,16 @@ local function controlEnergizer()
         
         if (EnergyInserted > EnergyExtracted) then
             State = "Charging"
-            if (avarageExtracted~=nil) then
+            if (avarageExtracted~=nil and avarageInserted ~=nil) then
                 ETA=(avarageInserted-avarageExtracted)*20--ticks/second
-            else
+            elseif (avarageInserted~=nil)
                 ETA=avarageInserted*20--ticks/second
+            else
+                ETA=999999999999999999999999
             end
         else
             State = "Decharging"
-            ETA = 0
+            ETA = 999999999999999999999999
         end
 
     
