@@ -27,7 +27,7 @@ size.x,size.y= monitor.getSize()
 graphic_window.xmin=(1)
 graphic_window.xmax=(size.x)
 graphic_window.ymin=(1)
-graphic_window.ymax=(size.y-12)
+graphic_window.ymax=(size.y-11)
 
 
 
@@ -128,7 +128,7 @@ local function postStatusUpdate()
     local filledString = string.rep("=", size.x-2)
     monitor.write(filledString)
 
-    monitor.setCursorPos(1,size.y-3)
+    monitor.setCursorPos(1,size.y-2)
     monitor.write("Status: ")
     if (Active) then
         monitor.setTextColor(colors.green)
@@ -139,9 +139,9 @@ local function postStatusUpdate()
         monitor.write("disabled")
     end
     
-    monitor.setTextColor(colors.white)
 
-    monitor.setCursorPos(1,size.y-4)
+
+    monitor.setCursorPos(1,size.y-3)
     monitor.write("State: ")
     if (State == "Charging") then
         monitor.setTextColor(colors.green)
@@ -152,38 +152,39 @@ local function postStatusUpdate()
         monitor.write(State)
     end
 
+    monitor.setTextColor(colors.white)
 
 
-    monitor.setCursorPos(1,size.y-5)
+    monitor.setCursorPos(1,size.y-4)
     monitor.write("Avarage Energy Extracted: ")
     monitor.write(formatNumber(averageExtracted))
    
 
-    monitor.setCursorPos(1,size.y-6)
+    monitor.setCursorPos(1,size.y-5)
     monitor.write("Avarage Energy Inserted: ")
     monitor.write(formatNumber(averageInserted))
 
 
-    monitor.setCursorPos(1,size.y-7)
+    monitor.setCursorPos(1,size.y-6)
     monitor.write("Total Capacity: ")
     monitor.write(formatNumber(Capacity))
 
-    monitor.setCursorPos(1,size.y-8)
+    monitor.setCursorPos(1,size.y-7)
     monitor.write("Total Energy Stored: ")
     monitor.write(formatNumber(Storage))
 
-    monitor.setCursorPos(1,size.y-9)
+    monitor.setCursorPos(1,size.y-8)
     monitor.write("Storage Coverd: ")
     monitor.write(string.format("%.2f", StoragePercent))
     monitor.write("%")
 
-    monitor.setCursorPos(2,size.y-10)
+    monitor.setCursorPos(2,size.y-9)
     monitor.write(filledString)
 
     monitor.setCursorPos(1,size.y-9)
     monitor.setTextColor(colors.lime)
     monitor.write("EnergyStats:")
-
+    monitor.setTextColor(colors.white)
 end
 
 
@@ -201,7 +202,6 @@ local function generateGraphs()
 
         drawRectangle(3,size.y/13,(graphic_window.xmax-2)*StoragePercent,size.y/3.25-1,true," ","green")
     end
-    drawRectangle((graphic_window.xmax-2)*targetCapacity,size.y/13,(graphic_window.xmax-2)*targetCapacity, size.y/3.25-1,false,"|","blue")
 
 
     --FuelLevel
@@ -257,8 +257,8 @@ local function controlEnergizer()
         averageInserted = calculateRunningAverage(insertedHistory)
         averageExtracted = calculateRunningAverage(extractedHistory)
 
-        local State
-        if EnergyInserted > EnergyExtracted then
+        
+        if (EnergyInserted > EnergyExtracted) then
             State = "Charging"
         else
             State = "Decharging"
