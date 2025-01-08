@@ -203,6 +203,10 @@ local function generateGraphs()
         drawRectangle(3,size.y/13,(graphic_window.xmax-2)*StoragePercent,size.y/3.25-1,true," ","green")
     end
 
+    local StringBuffer=string.format("%.2f", StoragePercent)
+    monitor.setCursorPos((size.x/2)-((#StringBuffer))/2,((size.y/3.25-1)-(size.y/13)/2+size.y/13))
+    monitor.write(StringBuffer)
+
 
     --FuelLevel
     BufferString = "State"
@@ -213,10 +217,17 @@ local function generateGraphs()
     drawRectangle(3,size.y/2.6+1,graphic_window.xmax-2,size.y/1.57-1,true," ","red")
     if (State == "Charging") then
         drawRectangle(3,size.y/2.47,(graphic_window.xmax-2),size.y/1.625+1,true,"+","green")
+        monitor.setTextColor(colors.green)
+        
     else
 
         drawRectangle(3,size.y/2.47,(graphic_window.xmax-2),size.y/1.625+1,true,"-","red")
+        monitor.setTextColor(colors.red)
     end
+    StringBuffer=State
+    monitor.setCursorPos((size.x/2)-((#StringBuffer))/2,((size.y/3.25-1)-(size.y/13)/2+size.y/13))
+    monitor.write(StringBuffer)
+    monitor.setTextColor(colors.white)
 
 end
 
